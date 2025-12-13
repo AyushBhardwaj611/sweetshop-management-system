@@ -1,12 +1,14 @@
 package com.sweetshop.sweetshop;
 
 import org.junit.jupiter.api.Test;
-import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.boot.autoconfigure.jdbc.DataSourceAutoConfiguration;
-import org.springframework.context.annotation.Import;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.context.ActiveProfiles;
+
 
 @SpringBootTest
-@Import(DataSourceAutoConfiguration.class) // temporarily import to avoid context errors
+@ActiveProfiles("test")
 class SweetshopApplicationTests {
 
 	@Test
