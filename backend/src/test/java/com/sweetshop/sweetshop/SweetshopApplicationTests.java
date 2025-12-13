@@ -2,18 +2,14 @@ package com.sweetshop.sweetshop;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.context.annotation.Configuration;
+import org.springframework.boot.autoconfigure.jdbc.DataSourceAutoConfiguration;
+import org.springframework.context.annotation.Import;
 
 @SpringBootTest
+@Import(DataSourceAutoConfiguration.class) // temporarily import to avoid context errors
 class SweetshopApplicationTests {
-
-	@Configuration
-	static class TestConfig {
-		// empty config: prevents Spring from auto-wiring the DB
-	}
 
 	@Test
 	void contextLoads() {
-		// This test just checks the Spring context loads without DB
 	}
 }
