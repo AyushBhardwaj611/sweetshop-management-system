@@ -19,11 +19,17 @@ public class SecurityConfig {
     }
 
     @Bean
-    SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
+    public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
                 .csrf(csrf -> csrf.disable())
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers("/api/auth/**").permitAll()
+
+                        .requestMatchers("/api/sweets").hasRole("ADMIN")
+                        .requestMatchers("/api/sweets/**").hasRole("ADMIN")
+
+                        .requestMatchers("/api/sweets", "/api/sweets/search").authenticated()
+
                         .anyRequest().authenticated()
                 )
                 .httpBasic(basic -> basic.disable())
@@ -34,7 +40,7 @@ public class SecurityConfig {
     }
 
     @Bean
-    AuthenticationManager authenticationManager(AuthenticationConfiguration config) throws Exception {
+    public AuthenticationManager authenticationManager(AuthenticationConfiguration config) throws Exception {
         return config.getAuthenticationManager();
     }
 }
