@@ -1,42 +1,64 @@
 package com.sweetshop.sweetshop.auth;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
-import org.springframework.boot.test.context.SpringBootTest;
+import org.mockito.Mockito;
+import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.test.context.ActiveProfiles;
+import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
-
+import static org.mockito.ArgumentMatchers.anyString;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
-@SpringBootTest
-@AutoConfigureMockMvc
-@ActiveProfiles("test")
 class AuthControllerTests {
 
-    @Autowired
     private MockMvc mockMvc;
+    private AuthService authService;
+    private AuthController authController;
 
-    @Autowired
-    private ObjectMapper objectMapper;
-
-    static class RegisterRequest {
-        public String username;
-        public String password;
+    @BeforeEach
+    void setUp() {
+        authService = Mockito.mock(AuthService.class);
+        authController = new AuthController(authService);
+        mockMvc = MockMvcBuilders.standaloneSetup(authController).build();
     }
 
     @Test
-    void registerUser_shouldReturnCreated() throws Exception {
-        RegisterRequest request = new RegisterRequest();
-        request.username = "testuser";
-        request.password = "TestPass123";
+    void testRegister() throws Exception {
+        Mockito.when(authService.register(anyString(), anyString()))
+                .thenReturn("mocked-token");
+
+        String jsonRequest = """
+                {
+                  "username": "testuser",
+                  "password": "password123"
+                }
+                """;
 
         mockMvc.perform(post("/api/auth/register")
-                        .contentType("application/json")
-                        .content(objectMapper.writeValueAsString(request)))
-                .andExpect(status().isCreated());
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(jsonRequest))
+                .andExpect(status().isCreated())
+                .andExpect(jsonPath("$.token").value("mocked-token"));
+    }
+
+    @Test
+    void testLogin() throws Exception {
+        Mockito.when(authService.login(anyString(), anyString()))
+                .thenReturn("mocked-token");
+
+        String jsonRequest = """
+                {
+                  "username": "testuser",
+                  "password": "password123"
+                }
+                """;
+
+        mockMvc.perform(post("/api/auth/login")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(jsonRequest))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.token").value("mocked-token"));
     }
 }
