@@ -1,4 +1,4 @@
-package com.sweetshop.sweetshop.config;
+package com.sweetshop.sweetshop.security;
 
 import com.sweetshop.sweetshop.security.JwtAuthenticationFilter;
 import org.springframework.context.annotation.Bean;
